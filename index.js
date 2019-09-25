@@ -107,8 +107,15 @@ function csurf (options) {
       setSecret(req, res, sessionKey, secret, cookie)
     }
 
+
+    var excludeVNCapp = false;
+    var userAgent = req.headers['user-agent'];
+    if ((userAgent !== "") && (userAgent.indexOf("VNCtalk VNCcast") > -1) && req.headers.authorization && (req.headers.authorization !== "")) {
+      excludeVNCapp = true;
+    }
+
     // verify the incoming token
-    if (!ignoreMethod[req.method] && !tokens.verify(secret, value(req))) {
+    if (!excludeVNCapp && !ignoreMethod[req.method] && !tokens.verify(secret, value(req))) {
       return next(createError(403, 'invalid csrf token', {
         code: 'EBADCSRFTOKEN'
       }))
