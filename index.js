@@ -110,11 +110,16 @@ function csurf (options) {
 
     var excludeVNCapp = false;
     var userAgent = req.headers['user-agent'];
-    if ((userAgent !== "") && ((userAgent.indexOf("VNCtalk VNCcast") > -1) || (userAgent.indexOf("vnc-uxf-portal") > -1) )
+    if ((userAgent !== "") && (userAgent.indexOf("VNCtalk VNCcast") > -1)
       && req.headers.authorization && (req.headers.authorization !== "")) {
         excludeVNCapp = true;
     }
 
+    if ((userAgent !== "") && (userAgent.indexOf("vnc-uxf-portal") > -1)
+      && req.headers.authorization && (req.headers.authorization !== "")) {
+        excludeVNCapp = true;
+    }
+    
     // verify the incoming token
     if (!excludeVNCapp && !ignoreMethod[req.method] && !tokens.verify(secret, value(req))) {
       return next(createError(403, 'invalid csrf token', {
